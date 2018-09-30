@@ -1,13 +1,24 @@
-#include <stdio.h>
-#include <boost/asio.hpp>
+#include "common.h"
 #include "udp.h"
+#include "http_svr.h"
+using namespace std;
 
-extern boost::asio::io_context io_context;
-int main() {
+
+int main(int argc, const char * argv[]) {
   
   int port = 4444;
-  UdpSvr us(io_context, port);
-  printf("udp server listen on port: %d\n", port);
-  io_context.run();
+  UdpSvr us( port);
+  HttpSvr server(port);
+
+  g_logger->set_level(spdlog::level::trace);
+  // g_logger->trace("c++ web server started at: {}", port);
+  // g_logger->debug("c++ web server started at: {}", port);
+  // g_logger->info("c++ web server started at: {}", port);
+  // g_logger->warn("c++ web server started at: {}", port);
+  // g_logger->error("c++ web server started at: {}", port);
+  // g_logger->critical("c++ web server started at: {}", port);
+  spdlog::flush_every(std::chrono::seconds(2));
+  console->info("udp server listen on port: {}", port);
+  g_io->run();
   return 0;
 }

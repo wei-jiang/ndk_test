@@ -7,10 +7,10 @@
 
 using namespace std;
 using boost::asio::ip::udp;
-boost::asio::io_context io_context;
+std::shared_ptr<boost::asio::io_context> g_io = make_shared<boost::asio::io_context>();
 
-UdpSvr::UdpSvr(boost::asio::io_context &io_context, short port)
-    : socket_(io_context, udp::endpoint(udp::v4(), port))
+UdpSvr::UdpSvr(short port)
+    : socket_(*g_io, udp::endpoint(udp::v4(), port))
 {
   do_receive();
 }

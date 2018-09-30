@@ -6,7 +6,7 @@
 class UdpSvr
 {    
   public:
-    UdpSvr(boost::asio::io_context &io_context, short port);
+    UdpSvr(short port);
     void do_receive();
     void do_send(std::size_t length);
   private:

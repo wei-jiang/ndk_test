@@ -11,30 +11,40 @@ set(BOOST_ROOT "/data/cpp_libs/android_libs/boost")
 set(BOOST_INCLUDEDIR "${BOOST_ROOT}/include/boost-1_67")
 set(BOOST_LIBRARYDIR "${BOOST_ROOT}/lib")
 FOREACH(LIB 
+    libboost_date_time-clang-mt-s-a32-1_67.a
     libboost_atomic-clang-mt-s-a32-1_67.a
-    libboost_chrono-clang-mt-s-a32-1_67.a
     libboost_filesystem-clang-mt-s-a32-1_67.a
     libboost_iostreams-clang-mt-s-a32-1_67.a
     libboost_system-clang-mt-s-a32-1_67.a
     libboost_timer-clang-mt-s-a32-1_67.a
 )
-    MESSAGE("-------- LIB = ${LIB} --------")
-    message("${BOOST_LIBRARYDIR}/${LIB}")
+    # MESSAGE("-------- LIB = ${LIB} --------")
+    # message("${BOOST_LIBRARYDIR}/${LIB}")
     LIST(APPEND Boost_LIBRARIES "${BOOST_LIBRARYDIR}/${LIB}")
 ENDFOREACH(LIB)
-MESSAGE("@@@@@@@ boost libs : ${Boost_LIBRARIES} @@@@@@@")
+# MESSAGE("@@@@@@@ boost libs : ${Boost_LIBRARIES} @@@@@@@")
 
-# Note: One could use a 'GLOB' here, but newly added source files won't auto-regen build files
-# After adding files, you'd need to 'touch' the CMakeLists.txt to re-gen
-set(SOURCE_FILES
-    src/main.cpp
-    src/udp.cpp
+file(GLOB SOURCE_FILES "src/*.cc" "src/*.cpp" "src/*.h")
+add_executable(${PROJECT_NAME} ${SOURCE_FILES})
+
+set(HEADER_DIR 
+    "/data/cpp_libs/android_libs/openssl/include"
+    "/data/cpp_libs/Simple-Web-Server"
+    "/data/cpp_libs/Simple-WebSocket-Server"
 )
+target_include_directories(${PROJECT_NAME} PRIVATE ${HEADER_DIR})
 
-# Include a location to the header files
-include_directories(src)
+set(OPENSSL_LIBRARYDIR "/data/cpp_libs/android_libs/openssl/lib")
+FOREACH(LIB 
+    libcrypto.a
+    libssl.a
+)
+    LIST(APPEND OpenSSL_LIBRARIES "${OPENSSL_LIBRARYDIR}/${LIB}")
+ENDFOREACH(LIB)
 
-
-add_executable(main ${SOURCE_FILES})
-include_directories(${BOOST_INCLUDEDIR})
-target_link_libraries(main ${Boost_LIBRARIES})
+set(IncludeDir 
+    ${BOOST_INCLUDEDIR}
+    "/data/cpp_libs/spdlog/include"
+)
+include_directories(${IncludeDir})
+target_link_libraries(${PROJECT_NAME} ${Boost_LIBRARIES} ${OpenSSL_LIBRARIES})
