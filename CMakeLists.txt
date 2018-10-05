@@ -2,7 +2,7 @@
 set(CMAKE_TOOLCHAIN_FILE "$ENV{ANDROID_NDK}/build/cmake/android.toolchain.cmake")
 set(ANDROID_PLATFORM "android-21")
 cmake_minimum_required (VERSION 3.8)
-project (main)
+project (net)
 
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c11")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -std=c++17")
@@ -25,7 +25,8 @@ ENDFOREACH(LIB)
 # MESSAGE("@@@@@@@ boost libs : ${Boost_LIBRARIES} @@@@@@@")
 
 file(GLOB SOURCE_FILES "src/*.cc" "src/*.cpp" "src/*.h")
-add_executable(${PROJECT_NAME} ${SOURCE_FILES})
+# add_executable(${PROJECT_NAME} ${SOURCE_FILES})
+add_library(${PROJECT_NAME} ${SOURCE_FILES})
 
 set(HEADER_DIR 
     "/data/cpp_libs/android_libs/openssl/include"
@@ -48,3 +49,6 @@ set(IncludeDir
 )
 include_directories(${IncludeDir})
 target_link_libraries(${PROJECT_NAME} ${Boost_LIBRARIES} ${OpenSSL_LIBRARIES})
+
+install(TARGETS ${PROJECT_NAME} DESTINATION "/data/cpp_libs/android_libs/net")
+install(FILES src/export.h DESTINATION "/data/cpp_libs/android_libs/net")
